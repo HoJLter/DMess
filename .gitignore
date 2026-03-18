@@ -1,0 +1,83 @@
+# =========================
+# Build folders
+# =========================
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+[Bb]uild*/
+x64/
+x86/
+Debug/
+Release/
+Out/
+out/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+build.ninja
+.ninja_deps
+.ninja_log
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.VC.db
+*.VC.opendb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Compiled files
+# =========================
+*.exe
+*.dll
+*.lib
+*.exp
+*.obj
+*.pdb
+*.ilk
+
+# =========================
+# Logs & temp
+# =========================
+*.log
+*.tmp
+*.tlog
+*.lastbuildstate
+
+# =========================
+# IntelliSense / cache
+# =========================
+ipch/
+*.ipch
+
+# =========================
+# OS junk
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Optional (если используешь)
+# =========================
+# clang
+*.dSYM/
+*.su
+
+# coverage / profiling
+*.gcda
+*.gcno
+*.gcov
+
+# =========================
+# Package managers
+# =========================
+# vcpkg
+vcpkg_installed/
