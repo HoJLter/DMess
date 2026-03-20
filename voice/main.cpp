@@ -1,6 +1,6 @@
 #include <iostream>
+#include "RtAudio.h"
 
 int main() {
-	std::cout << "HELLO";
-	return 0;
+
 }
