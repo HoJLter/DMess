@@ -5,12 +5,12 @@
  
 int main() {
     try {
-        RecordManager recorder;
+        AudioSystem audioSystem;
+        auto input = Pa_GetDefaultInputDevice();
+        auto output = Pa_GetDefaultOutputDevice();
 
-        auto in = Pa_GetDefaultInputDevice();
-        auto out = Pa_GetDefaultOutputDevice();
-
-        recorder.start(in, out);
+        RecordManager recorder(input, output);
+        recorder.start();
         std::cin.get();
     }
     catch (std::runtime_error& e) {

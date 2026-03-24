@@ -1,17 +1,23 @@
 #pragma once
 #include "portaudio.h"
 
+class AudioSystem {
+public:
+	AudioSystem();
+	~AudioSystem();
+};
+
 class RecordManager {
 private:
-	PaStream* stream ;
+	PaStream* stream = nullptr;
 
 public:
 	static PaStreamCallback callback;
 
-	int start(PaDeviceIndex inDeviceId, PaDeviceIndex outDeviceId);
+	int start();
 	int stop();
 
-	RecordManager();
+	RecordManager(PaDeviceIndex inDeviceId, PaDeviceIndex outDeviceId);
 	~RecordManager();
 };
 

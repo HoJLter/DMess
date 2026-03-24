@@ -1,46 +1,52 @@
 #include <iostream>
+#include <string>
 #include "RecordManager.h"
 
 
-RecordManager::RecordManager() {
-	int err = Pa_Initialize();
-	if (err < 0) {
-		throw std::runtime_error("[ERROR] PortAudio initialization failed with error: " + std::string(Pa_GetErrorText(err)));
-	}
+AudioSystem::AudioSystem() {
+    int err = Pa_Initialize();
+    if (err < 0) {
+        throw std::runtime_error("[ERROR] PortAudio initialization failed with error: " + std::string(Pa_GetErrorText(err)));
+    }
 }
 
-int RecordManager::start(PaDeviceIndex inDeviceId, PaDeviceIndex outDeviceId) {
-    const PaDeviceInfo* inDevice = Pa_GetDeviceInfo(inDeviceId);
-    const PaDeviceInfo* outDevice = Pa_GetDeviceInfo(inDeviceId);
+AudioSystem::~AudioSystem() {
+    Pa_Terminate();
+}
 
-    if (outDevice == nullptr) {
-        throw  std::runtime_error("[ERROR] Unknown output device.");
-    }
+RecordManager::RecordManager(PaDeviceIndex inDeviceId, PaDeviceIndex outDeviceId) {
+    const PaDeviceInfo* inDevice = Pa_GetDeviceInfo(inDeviceId);
+    const PaDeviceInfo* outDevice = Pa_GetDeviceInfo(outDeviceId);
+
     if (inDevice == nullptr) {
         throw  std::runtime_error("[ERROR] Unknown input device.");
     }
+    if (outDevice == nullptr) {
+        throw  std::runtime_error("[ERROR] Unknown output device.");
+    }
 
-    PaStreamParameters iparams;
-    iparams.device = inDeviceId;
-    iparams.channelCount = 1;
-    iparams.hostApiSpecificStreamInfo = NULL;
-    iparams.sampleFormat = paInt16;
-    iparams.suggestedLatency = inDevice->defaultLowInputLatency;
+    PaStreamParameters inParams;
+    inParams.device = inDeviceId;
+    inParams.channelCount = 1;
+    inParams.hostApiSpecificStreamInfo = NULL;
+    inParams.sampleFormat = paInt16;
+    inParams.suggestedLatency = inDevice->defaultLowInputLatency;
 
-    PaStreamParameters oparams;
-    oparams.device = outDeviceId;
-    oparams.channelCount = 1;
-    oparams.hostApiSpecificStreamInfo = NULL;
-    oparams.sampleFormat = paInt16;
-    oparams.suggestedLatency = outDevice->defaultLowOutputLatency;
+    PaStreamParameters outParams;
+    outParams.device = outDeviceId;
+    outParams.channelCount = 1;
+    outParams.hostApiSpecificStreamInfo = NULL;
+    outParams.sampleFormat = paInt16;
+    outParams.suggestedLatency = outDevice->defaultLowOutputLatency;
 
-    int err = Pa_OpenStream(&stream, &iparams, &oparams, 44100, 256, paNoFlag, callback, nullptr);
+    int err = Pa_OpenStream(&stream, &inParams, &outParams, 44100, 256, paNoFlag, callback, nullptr);
     if (err < 0) {
         throw std::runtime_error("[ERROR] Stream opening failed with error: " + std::string(Pa_GetErrorText(err)));
     }
+}
 
-
-    err = Pa_StartStream(stream);
+int RecordManager::start() {
+    int err = Pa_StartStream(stream);
     if (err < 0) {
         throw std::runtime_error("[ERROR] Stream starting failed with error: " + std::string(Pa_GetErrorText(err)));
     }
@@ -49,7 +55,15 @@ int RecordManager::start(PaDeviceIndex inDeviceId, PaDeviceIndex outDeviceId) {
 }
 
 int RecordManager::stop() {
-    Pa_StopStream(stream);
+    if (stream) {
+        if (Pa_IsStreamActive(stream) == 1) {
+            int err = Pa_StopStream(stream);
+            if (err < 0) {
+                throw std::runtime_error("[ERROR] Stream stopped with error: " + std::to_string(err));
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -66,11 +80,20 @@ int RecordManager::callback(
     for (int i = 0; i < frameCount; i++) {
         out[i] = in[i];
     }
-    return 0;
+    return paContinue;
 }
 
 RecordManager::~RecordManager() {
-    Pa_StopStream(stream);
-    Pa_CloseStream(stream);
-    Pa_Terminate();
+    if (stream) {
+        if (Pa_IsStreamActive(stream) == 1) {
+            int err = Pa_StopStream(stream);
+            if (err < 0) {
+                throw std::runtime_error("[ERROR] Stream stop failed with error: " + std::to_string(err));
+            }
+        }
+        int err = Pa_CloseStream(stream);
+        if (err < 0) {
+            throw std::runtime_error("[ERROR] Stream close failed with error: " + std::to_string(err));
+        }
+    }
 }
