@@ -2,9 +2,22 @@ cmake_minimum_required(VERSION 3.20)
 
 project(DMess)
 
+#EXTERNAL LIBS COMPILATION
 add_subdirectory(external/portaudio)
+add_subdirectory(external/opus)
 
-add_executable(DMess voice/main.cpp)
-target_link_libraries(DMess PRIVATE portaudio)
+#MAIN FILE COMPILE
+add_executable(DMess client/main.cpp)
 
+#LIBS LINKING
+target_link_libraries(DMess PRIVATE portaudio opus)
+
+
+#INCLUDE DIRECTORIES
+target_include_directories(DMess PRIVATE 
+							external/opus/include 
+							external/portaudio/include
+						   )
+#OTHER COMMANDS
 add_custom_command(TARGET DMess POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:portaudio> $<TARGET_FILE_DIR:DMess> )
+
