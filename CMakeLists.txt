@@ -7,7 +7,7 @@ add_subdirectory(external/portaudio)
 add_subdirectory(external/opus)
 
 #MAIN FILE COMPILE
-add_executable(DMess client/main.cpp "include/NetworkClient.h" "include/Encoder.h"  "client/RecordManager.cpp")
+add_executable(DMess client/main.cpp "include/NetworkClient.h" "include/Encoder.h"  "client/RecordManager.cpp" "client/Encoder.cpp")
 
 #LIBS LINKING
 target_link_libraries(DMess PRIVATE portaudio opus)
