@@ -87,13 +87,8 @@ RecordManager::~RecordManager() {
     if (stream) {
         if (Pa_IsStreamActive(stream) == 1) {
             int err = Pa_StopStream(stream);
-            if (err < 0) {
-                throw std::runtime_error("[ERROR] Stream stop failed with error: " + std::to_string(err));
-            }
+
         }
         int err = Pa_CloseStream(stream);
-        if (err < 0) {
-            throw std::runtime_error("[ERROR] Stream close failed with error: " + std::to_string(err));
-        }
     }
 }

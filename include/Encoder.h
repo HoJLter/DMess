@@ -2,13 +2,6 @@
 #include "opus.h"
 #include <vector>
 
-#include <iostream>
-#include "opus.h"
-#include "vector"
-int main() {
-
-}
-
 class Encoder {
 private:
 	OpusEncoder* encoder;

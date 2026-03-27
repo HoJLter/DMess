@@ -17,6 +17,7 @@ target_link_libraries(DMess PRIVATE portaudio opus)
 target_include_directories(DMess PRIVATE 
 							external/opus/include 
 							external/portaudio/include
+							external/asio/include
 							include
 						   )
 
